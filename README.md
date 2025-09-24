@@ -40,46 +40,55 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 ```
 ---
 
-## Tekil Veri Çekme (getOne)
+### Tekil Veri Çekme (getOne)
 
 ```php
 $post = Database::getOne('post', 'WHERE draft = ?', array(0));
 echo $post->title;
 ``` 
 
-Tekil Veri Çekme (execOne)
+### Tekil Veri Çekme (execOne)
 
 ```php
 $post = Database::execOne('SELECT * FROM post WHERE created = ?', array('2025-09-24 10:00'));
 echo $post->title;
 ```
 
-Tekil Veri Çekme (getId)
+### Tekil Veri Çekme (getId)
 
 ```php
 $category = Database::getId('category', 5);
 echo $category->name;
 ```
 
-Çoklu Veri Çekme (getAll)
+### Çoklu Veri Çekme (getAll)
+
+```php
 $posts = Database::getAll('post', 'WHERE draft = ?', array(0));
 foreach ($posts as $post) {
     echo $post->title . '<br>';
 }
+```
 
-Çoklu Veri Çekme (execAll)
+### Çoklu Veri Çekme (execAll)
+
+```php
 $posts = Database::execAll('SELECT * FROM post WHERE draft = ?', array(0));
 foreach ($posts as $post) {
     echo $post->title . '<br>';
 }
+```
 
-Çoklu Veri Çekme LIKE Komutu
+### Çoklu Veri Çekme LIKE Komutu
+
+```php
 $posts = Database::execAll('SELECT * FROM post WHERE draft = ? AND title LIKE ?', array(0, '%Gönderi%'));
 foreach ($posts as $post) {
     echo $post->title . '<br>';
 }
+```
 
-Veri Ekleme
+### Veri Ekleme
 $insert = Database::insert('post', [
     'title' => 'Yeni Gönderi',
     'body'  => 'Gönderi içeriği',
