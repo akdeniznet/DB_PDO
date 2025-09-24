@@ -6,6 +6,15 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 > Not: Veritabanından gelen veri **object** olarak döner.  
 > `$post->title` şeklinde kullanmalısınız.
 
+
+Örnek Akış
+Db::connect() ile veritabanına bağlan.
+Db::getOne() veya Db::getAll() ile veri çek.
+Db::insert() ile veri ekle.
+Db::update() ile veri güncelle.
+Db::delete() ile veri sil.
+Db::count() veya Db::execCount() ile satır sayısını al.
+
 ---
 ### Bağlantı Kurma
 
