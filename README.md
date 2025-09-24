@@ -170,3 +170,26 @@ echo $delete ? "Başarıyla silindi" : "Silinemedi";
 ```
 
 ---
+
+### Satır Sayısı Alma
+
+#### count
+
+```php
+$total = Db::count("db1", "users");
+echo "Toplam " . $total . " kullanıcı mevcut";
+```
+#### count ile Şartlı Sayım
+
+```php
+$active = Db::count("db1", "users", "WHERE active=?", [1]);
+echo "Aktif kullanıcı sayısı: " . $active;
+
+```
+
+#### execCount
+
+```php
+$drafts = Db::execCount("db1", "SELECT * FROM users WHERE active=0");
+echo "Taslak kullanıcı sayısı: " . $drafts;
+```
