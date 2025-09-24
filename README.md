@@ -38,7 +38,6 @@ Db::setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 $db = new Database('localhost', 'veritabani', 'root', '1234');
 $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 
-```
 
 [Database Class]
        |
