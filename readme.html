@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Pratik-PDO Dokümantasyon</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; background: #f5f5f5; color: #333; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #eee; padding: 2px 5px; border-radius: 3px; }
+    pre { background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: left; }
+    th { background: #34495e; color: white; }
+    .diagram { background: #ecf0f1; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre; }
+    .section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1);}
+</style>
+</head>
+<body>
+
+<div class="section">
+<h1>Pratik-PDO</h1>
+<p>Senin yazdığın <strong>Pratik-PDO</strong> sınıfı ile PDO kullanarak veritabanında CRUD işlemleri çok kolay.</p>
+<p>Veritabanından gelen veri <code>object</code> olarak döner. Örn: <code>$post->title</code></p>
+</div>
+
+<div class="section">
+<h2>Bağlantı Kurma</h2>
+<pre><code>Db::connect("db1", "localhost", "veritabani1", "root", "1234");
+Db::connect("db2", "localhost", "veritabani2", "root", "1234");</code></pre>
+<p>Bağlantıyı almak için:</p>
+<pre><code>$db1 = Db::getConnection("db1");
+$db2 = Db::getConnection("db2");</code></pre>
+</div>
+
+<div class="section">
+<h2>Primary Key Ayarı</h2>
+<pre><code>Db::setPrimaryKey('id'); // Default id, değiştirilebilir</code></pre>
+</div>
+
+<div class="section">
+<h2>Tekil Veri Çekme</h2>
+
+<h3>getOne</h3>
+<pre><code>$user = Db::getOne("db1", "users", "WHERE id=?", [1]);
+echo $user->name;</code></pre>
+
+<h3>getId</h3>
+<pre><code>$user = Db::getId("db1", "users", 1);
+echo $user->name;</code></pre>
+
+<h3>execOne</h3>
+<pre><code>$user = Db::execOne("db1", "SELECT * FROM users WHERE id=?", [1]);
+echo $user->name;</code></pre>
+</div>
+
+<div class="section">
+<h2>Çoklu Veri Çekme</h2>
+
+<h3>getAll</h3>
+<pre><code>$users = Db::getAll("db1", "users", "WHERE active=?", [1]);
+foreach ($users as $user) {
+    echo $user->name . "&lt;br&gt;";
+}</code></pre>
+
+<h3>execAll</h3>
+<pre><code>$users = Db::execAll("db1", "SELECT * FROM users WHERE active=?", [1]);
+foreach ($users as $user) {
+    echo $user->name . "&lt;br&gt;";
+}</code></pre>
+</div>
+
+<div class="section">
+<h2>Veri Ekleme</h2>
+<pre><code>$insertId = Db::insert("db1", "users", [
+    'name' => 'Ahmet',
+    'email' => 'ahmet@example.com'
+]);
+
+echo $insertId ? $insertId . " eklendi" : "Eklenemedi";</code></pre>
+</div>
+
+<div class="section">
+<h2>Veri Güncelleme</h2>
+
+<h3>ID ile güncelleme</h3>
+<pre><code>$update = Db::update("db1", "users", 1, [
+    'name' => 'Mehmet',
+    'email' => 'mehmet@example.com'
+]);
+
+echo $update ? "Başarıyla güncellendi" : "Güncellenemedi";</code></pre>
+
+<h3>Şart ve parametre ile güncelleme</h3>
+<pre><code>$update = Db::update("db1", "users", 0, [
+    'name' => 'Veli'
+], "WHERE email=?", ["veli@example.com"]);
+
+echo $update ? "Başarıyla güncellendi" : "Güncellenemedi";</code></pre>
+</div>
+
+<div class="section">
+<h2>Veri Silme</h2>
+
+<h3>ID ile silme</h3>
+<pre><code>$delete = Db::delete("db1", "users", 1);
+echo $delete ? "Başarıyla silindi" : "Silinemedi";</code></pre>
+
+<h3>Şart ve parametre ile silme</h3>
+<pre><code>$delete = Db::delete("db1", "users", 0, "WHERE email=?", ["veli@example.com"]);
+echo $delete ? "Başarıyla silindi" : "Silinemedi";</code></pre>
+</div>
+
+<div class="section">
+<h2>Satır Sayısı Alma</h2>
+
+<h3>count</h3>
+<pre><code>$total = Db::count("db1", "users");
+echo "Toplam " . $total . " kullanıcı mevcut";</code></pre>
+
+<h3>count ile şart</h3>
+<pre><code>$active = Db::count("db1", "users", "WHERE active=?", [1]);
+echo "Aktif kullanıcı sayısı: " . $active;</code></pre>
+
+<h3>execCount</h3>
+<pre><code>$drafts = Db::execCount("db1", "SELECT * FROM users WHERE active=0");
+echo "Taslak kullanıcı sayısı: " . $drafts;</code></pre>
+</div>
+
+<div class="section">
+<h2>CRUD Akış Diyagramı</h2>
+<div class="diagram">
+[Database Class]
+       |
+       |--- getOne / getId / execOne ---> Tek satır veri çek
+       |
+       |--- getAll / execAll ----------> Çoklu veri çek
+       |
+       |--- insert -------------------> Veri ekle
+       |
+       |--- update -------------------> Veri güncelle
+       |
+       |--- delete -------------------> Veri sil
+       |
+       |--- count / execCount --------> Satır sayısı
+</div>
+</div>
+
+</body>
+</html>
