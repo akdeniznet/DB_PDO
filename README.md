@@ -40,13 +40,17 @@ Db::setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 ---
 
 
-### Bağlantı Kurma ve Ayarlar
+### Bağlantı Kurma ve Ayarlar 
 
 ```php
 $db = new Database('localhost', 'veritabani', 'root', '1234');
 $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 
+```
 
+#### CRUD Akış Diyagramı
+
+```php
 [Database Class]
        |
        |--- getOne / getId / execOne ---> Tek satır veri çek
@@ -60,7 +64,7 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
        |--- delete -------------------> Veri sil
        |
        |--- count / execCount --------> Satır sayısı
-       Örnek Kullanım
+
 
 ```
 ---
