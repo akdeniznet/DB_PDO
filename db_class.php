@@ -1,13 +1,8 @@
 <?php
-Db::connect("db1", "localhost", "veritabani1", "root", "1234");
-Db::connect("db2", "localhost", "veritabani2", "root", "1234");
-
-// $user = Db::getOne("db1", "users", "WHERE id=?", [1]);
 
 class Db
 {
     private static array $connections = [];
-    private static ?PDOStatement $query = null;
     private static string $pk = 'id';
 
     /**
@@ -27,175 +22,163 @@ class Db
         );
     }
 
-    /**
-     * Bağlantıyı getir
-     */
     public static function getConnection(string $name): ?PDO
     {
         return self::$connections[$name] ?? null;
     }
 
-    /**
-     * Tek satır getir
-     */
+    // -------------------- Transaction Metodları --------------------
+
+    public static function beginTransaction(string $name): bool
+    {
+        return self::$connections[$name]->beginTransaction();
+    }
+
+    public static function commit(string $name): bool
+    {
+        return self::$connections[$name]->commit();
+    }
+
+    public static function rollback(string $name): bool
+    {
+        return self::$connections[$name]->rollBack();
+    }
+
+    // -------------------- CRUD --------------------
+
     public static function getOne(string $name, string $table, string $conditions = "", array $parameters = []): ?object
     {
         $sql = "SELECT * FROM `$table` $conditions LIMIT 1";
-        self::$query = self::$connections[$name]->prepare($sql);
-        self::$query->execute($parameters);
-        return self::$query->fetch() ?: null;
+        $stmt = self::$connections[$name]->prepare($sql);
+        $stmt->execute($parameters);
+        return $stmt->fetch() ?: null;
     }
 
-    /**
-     * ID ile tek satır getir
-     */
     public static function getId(string $name, string $table, int $id): ?object
     {
         $sql = "SELECT * FROM `$table` WHERE `" . self::$pk . "`=? LIMIT 1";
-        self::$query = self::$connections[$name]->prepare($sql);
-        self::$query->execute([$id]);
-        return self::$query->fetch() ?: null;
+        $stmt = self::$connections[$name]->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
     }
 
-    /**
-     * Custom tek satır sorgu
-     */
     public static function execOne(string $name, string $query, array $parameters = []): ?object
     {
-        self::$query = self::$connections[$name]->prepare($query);
-        self::$query->execute($parameters);
-        return self::$query->fetch() ?: null;
+        $stmt = self::$connections[$name]->prepare($query);
+        $stmt->execute($parameters);
+        return $stmt->fetch() ?: null;
     }
 
-    /**
-     * Çoklu satır getir
-     */
     public static function getAll(string $name, string $table, string $conditions = "", array $parameters = []): array
     {
         $sql = "SELECT * FROM `$table` $conditions";
-        self::$query = self::$connections[$name]->prepare($sql);
-        self::$query->execute($parameters);
-        return self::$query->fetchAll();
+        $stmt = self::$connections[$name]->prepare($sql);
+        $stmt->execute($parameters);
+        return $stmt->fetchAll();
     }
 
-    /**
-     * Custom çoklu sorgu
-     */
     public static function execAll(string $name, string $query, array $parameters = []): array
     {
-        self::$query = self::$connections[$name]->prepare($query);
-        self::$query->execute($parameters);
-        return self::$query->fetchAll();
+        $stmt = self::$connections[$name]->prepare($query);
+        $stmt->execute($parameters);
+        return $stmt->fetchAll();
     }
 
-    /**
-     * Insert
-     */
     public static function insert(string $name, string $table, array $data): int|false
     {
         $columns = array_keys($data);
         $values = array_values($data);
-
         $colString = implode(',', array_map(fn($c) => "`$c`", $columns));
         $placeholders = implode(',', array_fill(0, count($values), '?'));
 
         $sql = "INSERT INTO `$table` ($colString) VALUES ($placeholders)";
-        self::$query = self::$connections[$name]->prepare($sql);
+        $stmt = self::$connections[$name]->prepare($sql);
 
-        if (self::$query->execute($values)) {
+        if ($stmt->execute($values)) {
             return (int) self::$connections[$name]->lastInsertId();
         }
         return false;
     }
 
-    /**
-     * Update
-     */
     public static function update(string $name, string $table, ?int $id, array $data, string $conditions = "", array $parameters = []): bool|int
     {
         $columns = array_keys($data);
         $values = array_values($data);
         $setString = implode('=?, ', array_map(fn($c) => "`$c`", $columns)) . '=?';
 
-        // ID varsa
         if ($id) {
             $sql = "UPDATE `$table` SET $setString WHERE `" . self::$pk . "`=?";
-            self::$query = self::$connections[$name]->prepare($sql);
-            if (self::$query->execute([...$values, $id])) {
-                return $id;
-            }
-            return false;
+            $stmt = self::$connections[$name]->prepare($sql);
+            return $stmt->execute([...$values, $id]) ? $id : false;
         }
 
-        // Conditions varsa
         if ($conditions) {
             $sql = "UPDATE `$table` SET $setString $conditions";
-            self::$query = self::$connections[$name]->prepare($sql);
-            return self::$query->execute([...$values, ...$parameters]);
+            $stmt = self::$connections[$name]->prepare($sql);
+            return $stmt->execute([...$values, ...$parameters]);
         }
 
         return false;
     }
 
-    /**
-     * Delete
-     */
     public static function delete(string $name, string $table, ?int $id = null, string $conditions = "", array $parameters = []): bool|int
     {
         if ($id) {
             $sql = "DELETE FROM `$table` WHERE `" . self::$pk . "`=?";
-            self::$query = self::$connections[$name]->prepare($sql);
-            if (self::$query->execute([$id])) {
-                return $id;
-            }
-            return false;
+            $stmt = self::$connections[$name]->prepare($sql);
+            return $stmt->execute([$id]) ? $id : false;
         }
 
         if ($conditions) {
             $sql = "DELETE FROM `$table` $conditions";
-            self::$query = self::$connections[$name]->prepare($sql);
-            return self::$query->execute($parameters);
+            $stmt = self::$connections[$name]->prepare($sql);
+            return $stmt->execute($parameters);
         }
 
         return false;
     }
 
-    /**
-     * Count
-     */
     public static function count(string $name, string $table, string $conditions = "", array $parameters = []): int
     {
         $sql = "SELECT COUNT(*) FROM `$table` $conditions";
-        self::$query = self::$connections[$name]->prepare($sql);
-        self::$query->execute($parameters);
-        return (int) self::$query->fetchColumn();
+        $stmt = self::$connections[$name]->prepare($sql);
+        $stmt->execute($parameters);
+        return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * Custom Count
-     */
     public static function execCount(string $name, string $query, array $parameters = []): int
     {
-        self::$query = self::$connections[$name]->prepare($query);
-        self::$query->execute($parameters);
-        return (int) self::$query->fetchColumn();
+        $stmt = self::$connections[$name]->prepare($query);
+        $stmt->execute($parameters);
+        return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * PK değiştir
-     */
     public static function setPrimaryKey(string $pk): void
     {
         self::$pk = $pk;
     }
 
-    /**
-     * Bağlantı var mı
-     */
     public static function is_connected(string $name): bool
     {
         return isset(self::$connections[$name]) && self::$connections[$name] instanceof PDO;
     }
 }
 
-// --- Örnek Kullanım ---
+// -------------------- Örnek Kullanım --------------------
+Db::connect("db1", "localhost", "veritabani1", "root", "1234");
+
+try {
+    Db::beginTransaction("db1");
+
+    $userId = Db::insert("db1", "users", [
+        "name" => "Ali",
+        "email" => "ali@example.com"
+    ]);
+
+    Db::update("db1", "users", $userId, ["email" => "ali2@example.com"]);
+
+    Db::commit("db1");
+} catch (Exception $e) {
+    Db::rollback("db1");
+    echo "Hata: " . $e->getMessage();
+}
