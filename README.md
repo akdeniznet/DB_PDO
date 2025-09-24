@@ -37,11 +37,17 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
        |
        |--- count / execCount --------> Satır sayısı
        Örnek Kullanım
-Tekil Veri Çekme (getOne)
+
+
+## Tekil Veri Çekme (getOne)
+
+```php
 $post = Database::getOne('post', 'WHERE draft = ?', array(0));
 echo $post->title;
 
-Tekil Veri Çekme (execOne)
+## Tekil Veri Çekme (execOne)
+
+```php
 $post = Database::execOne('SELECT * FROM post WHERE created = ?', array('2025-09-24 10:00'));
 echo $post->title;
 
