@@ -22,3 +22,17 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 ```php
 $db = new Database('localhost', 'veritabani', 'root', '1234');
 $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
+
+[Database Class]
+       |
+       |--- getOne / getId / execOne ---> Tek satır veri çek
+       |
+       |--- getAll / execAll ----------> Çoklu veri çek
+       |
+       |--- insert -------------------> Veri ekle
+       |
+       |--- update -------------------> Veri güncelle
+       |
+       |--- delete -------------------> Veri sil
+       |
+       |--- count / execCount --------> Satır sayısı
