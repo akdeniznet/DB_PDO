@@ -15,6 +15,7 @@ Db::connect("db2", "localhost", "veritabani2", "root", "1234");
 
 $db1 = Db::getConnection("db1");
 $db2 = Db::getConnection("db2");
+
 ```
 
 ---
@@ -23,6 +24,7 @@ $db2 = Db::getConnection("db2");
 
 ```php
 Db::setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
+
 ```
 
 ---
@@ -48,6 +50,7 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
        |
        |--- count / execCount --------> Satır sayısı
        Örnek Kullanım
+
 ```
 ---
 
@@ -66,6 +69,7 @@ echo $user->name;
 ```php
 $user = Db::getId("db1", "users", 1);
 echo $user->name;
+
 ```
 
 #### execOne
@@ -73,35 +77,36 @@ echo $user->name;
 ```php
 $user = Db::execOne("db1", "SELECT * FROM users WHERE id=?", [1]);
 echo $user->name;
+
 ```
 
-### Çoklu Veri Çekme (getAll)
+### Çoklu Veri Çekme
 
+#### getAll
 ```php
-$posts = Database::getAll('post', 'WHERE draft = ?', array(0));
-foreach ($posts as $post) {
-    echo $post->title . '<br>';
-}
+$users = Db::getAll("db1", "users", "WHERE active=?", [1]);
+foreach ($users as $user) {
+    echo $user->name . "<br>";
+    
 ```
 
----
-
-### Çoklu Veri Çekme (execAll)
+#### execAll
 
 ```php
-$posts = Database::execAll('SELECT * FROM post WHERE draft = ?', array(0));
-foreach ($posts as $post) {
-    echo $post->title . '<br>';
+$users = Db::execAll("db1", "SELECT * FROM users WHERE active=?", [1]);
+foreach ($users as $user) {
+    echo $user->name . "<br>";
 }
+
 ```
 
-### Çoklu Veri Çekme LIKE Komutu
+#### execAll LIKE Komutu
 
 ```php
-$posts = Database::execAll('SELECT * FROM post WHERE draft = ? AND title LIKE ?', array(0, '%Gönderi%'));
-foreach ($posts as $post) {
-    echo $post->title . '<br>';
-}
+$users = Db::execAll("db1", "SELECT * FROM users WHERE active=? AND name LIKE ?", [1, '%Ahmet%']);
+foreach ($users as $user) {
+    echo $user->name . "<br>";
+    
 ```
 
 ### Veri Ekleme
