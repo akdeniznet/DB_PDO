@@ -7,13 +7,6 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 > `$post->title` şeklinde kullanmalısınız.
 
 
-Örnek Akış
-Db::connect() ile veritabanına bağlan.
-Db::getOne() veya Db::getAll() ile veri çek.
-Db::insert() ile veri ekle.
-Db::update() ile veri güncelle.
-Db::delete() ile veri sil.
-Db::count() veya Db::execCount() ile satır sayısını al.
 
 ---
 ### Bağlantı Kurma
@@ -44,6 +37,8 @@ Db::setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 ```php
 $db = new Database('localhost', 'veritabani', 'root', '1234');
 $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
+
+```
 
 [Database Class]
        |
