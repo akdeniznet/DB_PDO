@@ -14,7 +14,8 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 - Db::update() ile veri güncelle.
 - Db::delete() ile veri sil.
 - Db::count() veya Db::execCount() ile satır sayısını al.
-- 
+
+  
 ---
 ### Bağlantı Kurma
 
