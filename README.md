@@ -106,64 +106,67 @@ foreach ($users as $user) {
 $users = Db::execAll("db1", "SELECT * FROM users WHERE active=? AND name LIKE ?", [1, '%Ahmet%']);
 foreach ($users as $user) {
     echo $user->name . "<br>";
-    
+}
+
 ```
 
+---
+
 ### Veri Ekleme
-$insert = Database::insert('post', [
-    'title' => 'Yeni Gönderi',
-    'body'  => 'Gönderi içeriği',
-    'draft' => 0
+
+```php
+$insertId = Db::insert("db1", "users", [
+    'name' => 'Ahmet',
+    'email' => 'ahmet@example.com'
 ]);
 
-echo $insert ? $insert . ' eklendi' : 'Eklenemedi';
+echo $insertId ? $insertId . " eklendi" : "Eklenemedi";
 
-Veri Güncelleme
+```
+---
 
-ID'ye göre güncelleme:
+### Veri Güncelleme
 
-$update = Database::update('post', 1, [
-    'title' => 'Güncellenmiş Başlık',
-    'body'  => 'Yeni içerik'
+#### ID ile Güncelleme
+
+```php
+$update = Db::update("db1", "users", 1, [
+    'name' => 'Mehmet',
+    'email' => 'mehmet@example.com'
 ]);
 
-echo $update ? 'Başarıyla güncellendi' : 'Güncellenemedi';
+echo $update ? "Başarıyla güncellendi" : "Güncellenemedi";
 
+```
 
-ID olmadan şart ve parametrelerle güncelleme:
+### Şart ve Parametre ile Güncelleme
 
-$update = Database::update('post', 0, [
-    'title' => 'Yeni Başlık',
-    'body'  => 'Düzenlenen içerik'
-], 'WHERE title = ?', array('Eski Başlık'));
+```php
+$update = Db::update("db1", "users", 0, [
+    'name' => 'Veli'
+], "WHERE email=?", ["veli@example.com"]);
 
-echo $update ? 'Başarıyla güncellendi' : 'Güncellenemedi';
+echo $update ? "Başarıyla güncellendi" : "Güncellenemedi";
 
-Veri Silme
+```
+---
 
-ID ile silme:
+### Veri Silme
 
-$delete = Database::delete('post', 1);
-echo $delete ? 'Başarıyla silindi' : 'Silinemedi';
+#### ID ile Silme
 
+```php
+$delete = Db::delete("db1", "users", 1);
+echo $delete ? "Başarıyla silindi" : "Silinemedi";
 
-Şart ve parametrelerle silme:
+```
 
-$delete = Database::delete('post', 0, 'WHERE title = ?', array('Silinmelik Gönderi'));
-echo $delete ? 'Başarıyla silindi' : 'Silinemedi';
+#### Şart ve Parametre ile Silme
 
-Toplam Satır Sayısı Alma
-$count = Database::count('post');
-echo $count ? 'Toplam ' . $count . ' gönderi mevcut' : 'Henüz hiç gönderi yok';
+```php
+$delete = Db::delete("db1", "users", 0, "WHERE email=?", ["veli@example.com"]);
+echo $delete ? "Başarıyla silindi" : "Silinemedi";
 
+```
 
-Şartlı sayım:
-
-$count = Database::count('post', 'WHERE draft = ?', array(0));
-echo $count ? 'Toplam ' . $count . ' yayımda olan gönderi mevcut' : 'Henüz hiç yayımlanmış gönderi yok';
-
-
-SQL ile manuel sayım:
-
-$count = Database::execCount('SELECT * FROM post WHERE draft = ?', array(1));
-echo $count ? 'Toplam ' . $count . ' taslak olan gönderi mevcut' : 'Hiç taslak gönderi yok';
+---
