@@ -37,5 +37,5 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
        |
        |--- count / execCount --------> Satır sayısı
        Örnek Kullanım
-
+```
 ---
