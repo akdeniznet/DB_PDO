@@ -8,7 +8,7 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 
 Örnek Akış
 
-- Db::connect() ile veritabanına bağlan.
+- <mark>Db::connect() ile veritabanına bağlan.</mark>
 - Db::getOne() veya Db::getAll() ile veri çek.
 - Db::insert() ile veri ekle.
 - Db::update() ile veri güncelle.
