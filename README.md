@@ -38,6 +38,7 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
        |--- count / execCount --------> Satır sayısı
        Örnek Kullanım
 
+---
 
 ## Tekil Veri Çekme (getOne)
 
