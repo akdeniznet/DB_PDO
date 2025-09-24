@@ -1,4 +1,4 @@
-# Pratik-PDO
+### PDO
 
 PDO ile yazılmış pratik ve kullanımı kolay bir veritabanı sınıfı.  
 Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilirsiniz.
@@ -7,17 +7,28 @@ Veritabanındaki tablolarla çalışırken CRUD işlemlerini hızlıca yapabilir
 > `$post->title` şeklinde kullanmalısınız.
 
 ---
+### Bağlantı Kurma
 
-## Örnek Tablo: `post`
+```php
+Db::connect("db1", "localhost", "veritabani1", "root", "1234");
+Db::connect("db2", "localhost", "veritabani2", "root", "1234");
 
-| id  | title              | body                     | draft | created             |
-|-----|------------------|-------------------------|-------|--------------------|
-| 1   | İlk Gönderi       | İçerik 1               | 0     | 2025-09-24 10:00   |
-| 2   | İkinci Gönderi    | İçerik 2               | 1     | 2025-09-24 11:00   |
+$db1 = Db::getConnection("db1");
+$db2 = Db::getConnection("db2");
+```
 
 ---
 
-## Bağlantı Kurma ve Ayarlar
+### Primary Key Ayarı
+
+```php
+Db::setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
+```
+
+---
+
+
+### Bağlantı Kurma ve Ayarlar
 
 ```php
 $db = new Database('localhost', 'veritabani', 'root', '1234');
@@ -42,23 +53,26 @@ $db->setPrimaryKey('id'); // Varsayılan id, değiştirilebilir
 
 ### Tekil Veri Çekme (getOne)
 
+#### getOne
+
 ```php
-$post = Database::getOne('post', 'WHERE draft = ?', array(0));
-echo $post->title;
+$user = Db::getOne("db1", "users", "WHERE id=?", [1]);
+echo $user->name;
+
 ``` 
 
-### Tekil Veri Çekme (execOne)
+#### getId
 
 ```php
-$post = Database::execOne('SELECT * FROM post WHERE created = ?', array('2025-09-24 10:00'));
-echo $post->title;
+$user = Db::getId("db1", "users", 1);
+echo $user->name;
 ```
 
-### Tekil Veri Çekme (getId)
+#### execOne
 
 ```php
-$category = Database::getId('category', 5);
-echo $category->name;
+$user = Db::execOne("db1", "SELECT * FROM users WHERE id=?", [1]);
+echo $user->name;
 ```
 
 ### Çoklu Veri Çekme (getAll)
@@ -69,6 +83,8 @@ foreach ($posts as $post) {
     echo $post->title . '<br>';
 }
 ```
+
+---
 
 ### Çoklu Veri Çekme (execAll)
 
